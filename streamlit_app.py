@@ -9,3 +9,4 @@ st.badge("Success", icon=":material/check:", color="green")
 
 st.markdown(
     ":violet-badge[:material/star: 1 balon] :orange-badge[2 balon] :gray-badge[3 balon]"
+)
