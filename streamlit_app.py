@@ -115,10 +115,353 @@ hr { border-color: rgba(255,255,255,0.08) !important; }
 """, unsafe_allow_html=True)
  
 # ── Data ────────────────────────────────────────────────────────────────────
-from data.compounds   import COMPOUNDS, GOLONGAN_TAGS
-from data.questions   import ID_QUESTIONS, SCORING_RULES
-from data.materi      import MATERI_LIST
- 
+GOLONGAN_TAGS = [
+    "Alkohol", "Aldehid", "Keton", "Fenol", "Asam Karboksilat",
+    "Ester", "Alkena", "Alkuna", "Karbohidrat", "Protein", "Aromatik", "Asam Amino",
+]
+
+COMPOUNDS = [
+    # ── ALKOHOL ──────────────────────────────────────────────────────────────
+    {
+        "name": "Metanol", "formula": "CH₃OH", "group": "Alkohol",
+        "desc": "Alkohol paling sederhana. Bersifat racun jika dikonsumsi. Larut sempurna dalam air.",
+        "tests": {
+            "Tollens": "neg", "Baeyer": "neg", "Bromin": "neg",
+            "Iodoform": "neg", "DNPH": "neg", "FeCl₃": "neg",
+            "Lucas": "neg (lambat)", "Biuret": "neg", "Molisch": "neg",
+            "Esterifikasi": "pos",
+        },
+        "positive": ["Esterifikasi", "Uji Na logam (gelembung H₂)"],
+        "negative": ["Tollens", "Iodoform", "DNPH"],
+    },
+    {
+        "name": "Etanol", "formula": "C₂H₅OH", "group": "Alkohol",
+        "desc": "Alkohol paling umum. Terdapat dalam minuman beralkohol dan digunakan sebagai pelarut serta antiseptik.",
+        "tests": {
+            "Tollens": "neg", "Baeyer": "neg", "Bromin": "neg",
+            "Iodoform": "pos", "DNPH": "neg", "FeCl₃": "neg",
+            "Lucas": "neg (lambat)", "Biuret": "neg", "Molisch": "neg",
+            "Esterifikasi": "pos",
+        },
+        "positive": ["Iodoform (endapan kuning CHI₃)", "Esterifikasi"],
+        "negative": ["Tollens", "DNPH", "FeCl₃"],
+    },
+    {
+        "name": "2-Propanol", "formula": "(CH₃)₂CHOH", "group": "Alkohol",
+        "desc": "Isopropanol, alkohol sekunder. Digunakan sebagai antiseptik. Bereaksi positif iodoform karena struktur metil-sekunder.",
+        "tests": {
+            "Tollens": "neg", "Baeyer": "neg", "Bromin": "neg",
+            "Iodoform": "pos", "DNPH": "neg", "FeCl₃": "neg",
+            "Lucas": "pos (sedang, ~5 menit)", "Biuret": "neg", "Molisch": "neg",
+            "Esterifikasi": "pos",
+        },
+        "positive": ["Iodoform", "Lucas (sedang ±5 menit)"],
+        "negative": ["Tollens", "DNPH"],
+    },
+    {
+        "name": "1-Butanol", "formula": "C₄H₉OH", "group": "Alkohol",
+        "desc": "Alkohol primer rantai lurus. Pelarut industri. Lucas negatif (sangat lambat) karena alkohol primer.",
+        "tests": {
+            "Tollens": "neg", "Baeyer": "neg", "Bromin": "neg",
+            "Iodoform": "neg", "DNPH": "neg", "FeCl₃": "neg",
+            "Lucas": "neg (sangat lambat)", "Biuret": "neg", "Molisch": "neg",
+            "Esterifikasi": "pos",
+        },
+        "positive": ["Esterifikasi", "Oksidasi → Aldehid"],
+        "negative": ["Tollens", "Iodoform", "DNPH"],
+    },
+
+    # ── ALDEHID ──────────────────────────────────────────────────────────────
+    {
+        "name": "Formaldehid", "formula": "HCHO", "group": "Aldehid",
+        "desc": "Aldehid paling sederhana. Gas berbau menyengat, digunakan sebagai formalin (larutan 37%). Iodoform negatif karena tidak punya gugus metil.",
+        "tests": {
+            "Tollens": "pos", "Baeyer": "neg", "Bromin": "pos",
+            "Iodoform": "neg", "DNPH": "pos", "FeCl₃": "neg",
+            "Lucas": "neg", "Biuret": "neg", "Molisch": "neg",
+            "Fehling": "pos",
+        },
+        "positive": ["Tollens (cermin perak)", "DNPH", "Bromin", "Fehling/Benedict"],
+        "negative": ["Baeyer", "Iodoform", "FeCl₃"],
+    },
+    {
+        "name": "Asetaldehid", "formula": "CH₃CHO", "group": "Aldehid",
+        "desc": "Aldehid dengan gugus metil. Bersifat reaktif, mudah teroksidasi. Positif iodoform karena gugus CH₃ bersebelahan dengan C=O.",
+        "tests": {
+            "Tollens": "pos", "Baeyer": "neg", "Bromin": "pos",
+            "Iodoform": "pos", "DNPH": "pos", "FeCl₃": "neg",
+            "Lucas": "neg", "Biuret": "neg", "Molisch": "neg",
+            "Fehling": "pos",
+        },
+        "positive": ["Tollens", "Iodoform", "DNPH", "Fehling"],
+        "negative": ["Baeyer", "FeCl₃"],
+    },
+    {
+        "name": "Benzaldehid", "formula": "C₆H₅CHO", "group": "Aldehid",
+        "desc": "Aldehid aromatik dengan aroma almond. Tidak bereaksi dengan iodoform karena tidak ada gugus metil di sebelah C=O.",
+        "tests": {
+            "Tollens": "pos", "Baeyer": "neg", "Bromin": "neg",
+            "Iodoform": "neg", "DNPH": "pos", "FeCl₃": "neg",
+            "Lucas": "neg", "Biuret": "neg", "Molisch": "neg",
+            "Fehling": "neg",
+        },
+        "positive": ["Tollens", "DNPH"],
+        "negative": ["Iodoform", "Baeyer", "Fehling (tidak mereduksi)"],
+    },
+
+    # ── KETON ─────────────────────────────────────────────────────────────────
+    {
+        "name": "Aseton", "formula": "CH₃COCH₃", "group": "Keton",
+        "desc": "Keton paling sederhana. Pelarut organik yang umum digunakan. Positif iodoform karena metil keton.",
+        "tests": {
+            "Tollens": "neg", "Baeyer": "neg", "Bromin": "neg",
+            "Iodoform": "pos", "DNPH": "pos", "FeCl₃": "neg",
+            "Lucas": "neg", "Biuret": "neg", "Molisch": "neg",
+        },
+        "positive": ["Iodoform (kuning)", "DNPH (oranye)"],
+        "negative": ["Tollens", "Baeyer", "FeCl₃"],
+    },
+    {
+        "name": "Metil Etil Keton", "formula": "CH₃COC₂H₅", "group": "Keton",
+        "desc": "Butanon/MEK, keton asimetris. Pelarut industri penting. Metil keton → positif iodoform.",
+        "tests": {
+            "Tollens": "neg", "Baeyer": "neg", "Bromin": "neg",
+            "Iodoform": "pos", "DNPH": "pos", "FeCl₃": "neg",
+            "Lucas": "neg", "Biuret": "neg", "Molisch": "neg",
+        },
+        "positive": ["Iodoform", "DNPH"],
+        "negative": ["Tollens", "FeCl₃"],
+    },
+    {
+        "name": "Sikloheksanon", "formula": "C₆H₁₀O", "group": "Keton",
+        "desc": "Keton siklik. Iodoform negatif karena bukan metil keton. Tidak punya gugus CH₃ di sebelah C=O.",
+        "tests": {
+            "Tollens": "neg", "Baeyer": "neg", "Bromin": "neg",
+            "Iodoform": "neg", "DNPH": "pos", "FeCl₃": "neg",
+            "Lucas": "neg", "Biuret": "neg", "Molisch": "neg",
+        },
+        "positive": ["DNPH (oranye-kuning)"],
+        "negative": ["Tollens", "Iodoform"],
+    },
+
+    # ── FENOL ─────────────────────────────────────────────────────────────────
+    {
+        "name": "Fenol", "formula": "C₆H₅OH", "group": "Fenol",
+        "desc": "Alkohol aromatik. Bereaksi kuat dengan FeCl₃ menghasilkan warna violet. Asam lemah (pKa 9.95). Bromin menghasilkan endapan putih.",
+        "tests": {
+            "Tollens": "neg", "Baeyer": "neg", "Bromin": "pos (endapan putih)",
+            "Iodoform": "neg", "DNPH": "neg", "FeCl₃": "pos (violet)",
+            "Lucas": "neg", "Biuret": "neg", "Molisch": "neg",
+            "Lakmus": "pos (sedikit asam)",
+        },
+        "positive": ["FeCl₃ (violet intens)", "Bromin (endapan 2,4,6-tribromofenol)", "Lakmus"],
+        "negative": ["Tollens", "Iodoform", "DNPH"],
+    },
+    {
+        "name": "Kresol", "formula": "CH₃C₆H₄OH", "group": "Fenol",
+        "desc": "Metil fenol (isomer orto, meta, para). Digunakan sebagai antiseptik (Lysol). Bereaksi seperti fenol terhadap FeCl₃.",
+        "tests": {
+            "Tollens": "neg", "Baeyer": "neg", "Bromin": "pos",
+            "Iodoform": "neg", "DNPH": "neg", "FeCl₃": "pos",
+            "Lucas": "neg", "Biuret": "neg", "Molisch": "neg",
+        },
+        "positive": ["FeCl₃", "Bromin"],
+        "negative": ["Tollens", "DNPH"],
+    },
+
+    # ── ASAM KARBOKSILAT ──────────────────────────────────────────────────────
+    {
+        "name": "Asam Asetat", "formula": "CH₃COOH", "group": "Asam Karboksilat",
+        "desc": "Asam asetat, komponen utama cuka. Asam organik lemah (pKa 4.76). Berbau menyengat.",
+        "tests": {
+            "Tollens": "neg", "Baeyer": "neg", "Bromin": "neg",
+            "Iodoform": "neg", "DNPH": "neg", "FeCl₃": "neg",
+            "Lucas": "neg", "Biuret": "neg", "Molisch": "neg",
+            "Lakmus": "pos", "Esterifikasi": "pos",
+        },
+        "positive": ["Lakmus merah → biru", "Esterifikasi", "Na₂CO₃ (gelembung CO₂)"],
+        "negative": ["Tollens", "DNPH", "FeCl₃"],
+    },
+    {
+        "name": "Asam Format", "formula": "HCOOH", "group": "Asam Karboksilat",
+        "desc": "Asam format (asam semut). Unik: memiliki karakter aldehid tersembunyi sehingga bereaksi positif Tollens. Asam karboksilat terkuat di serinya.",
+        "tests": {
+            "Tollens": "pos (unik!)", "Baeyer": "neg", "Bromin": "neg",
+            "Iodoform": "neg", "DNPH": "neg", "FeCl₃": "neg",
+            "Lucas": "neg", "Biuret": "neg", "Molisch": "neg",
+            "Lakmus": "pos", "Esterifikasi": "pos",
+        },
+        "positive": ["Tollens (karena gugus -CHO)", "Lakmus", "Esterifikasi"],
+        "negative": ["DNPH", "Iodoform", "Baeyer"],
+    },
+    {
+        "name": "Asam Benzoat", "formula": "C₆H₅COOH", "group": "Asam Karboksilat",
+        "desc": "Asam karboksilat aromatik. Padatan kristal putih. FeCl₃ memberikan warna oranye/merah (bukan violet seperti fenol).",
+        "tests": {
+            "Tollens": "neg", "Baeyer": "neg", "Bromin": "neg",
+            "Iodoform": "neg", "DNPH": "neg", "FeCl₃": "pos (oranye)",
+            "Lucas": "neg", "Biuret": "neg", "Molisch": "neg",
+            "Lakmus": "pos", "Esterifikasi": "pos",
+        },
+        "positive": ["Lakmus", "FeCl₃ (oranye/kuning)", "Esterifikasi"],
+        "negative": ["Tollens", "DNPH"],
+    },
+
+    # ── ESTER ─────────────────────────────────────────────────────────────────
+    {
+        "name": "Etil Asetat", "formula": "CH₃COOC₂H₅", "group": "Ester",
+        "desc": "Ester paling umum. Berbau harum (buah pir). Netral secara kimia, tidak bereaksi dengan kebanyakan pereaksi. Dapat dihidrolisis dengan asam/basa.",
+        "tests": {
+            "Tollens": "neg", "Baeyer": "neg", "Bromin": "neg",
+            "Iodoform": "neg", "DNPH": "neg", "FeCl₃": "neg",
+            "Lucas": "neg", "Biuret": "neg", "Molisch": "neg",
+            "Hidrolisis": "pos",
+        },
+        "positive": ["Hidrolisis asam/basa (→ asam + alkohol)"],
+        "negative": ["Tollens", "DNPH", "FeCl₃", "Bromin"],
+    },
+    {
+        "name": "Metil Salisilat", "formula": "C₈H₈O₃", "group": "Ester",
+        "desc": "Ester fenol dengan bau khas minyak wintergreen. Setelah hidrolisis menghasilkan asam salisilat (fenol) yang bereaksi FeCl₃.",
+        "tests": {
+            "Tollens": "neg", "Baeyer": "neg", "Bromin": "neg",
+            "Iodoform": "neg", "DNPH": "neg", "FeCl₃": "pos (setelah hidrolisis)",
+            "Lucas": "neg", "Biuret": "neg", "Molisch": "neg",
+            "Hidrolisis": "pos",
+        },
+        "positive": ["FeCl₃ (setelah hidrolisis)", "Hidrolisis"],
+        "negative": ["Tollens", "DNPH"],
+    },
+
+    # ── ALKENA ────────────────────────────────────────────────────────────────
+    {
+        "name": "Etilena (Etena)", "formula": "CH₂=CH₂", "group": "Alkena",
+        "desc": "Alkena paling sederhana. Gas tidak berwarna. Bahan baku industri polietilena dan etanol.",
+        "tests": {
+            "Tollens": "neg", "Baeyer": "pos", "Bromin": "pos",
+            "Iodoform": "neg", "DNPH": "neg", "FeCl₃": "neg",
+            "Lucas": "neg", "Biuret": "neg", "Molisch": "neg",
+        },
+        "positive": ["Baeyer (KMnO₄ ungu → coklat)", "Bromin (dekolorisasi)"],
+        "negative": ["Tollens", "DNPH", "FeCl₃"],
+    },
+    {
+        "name": "Sikloheksena", "formula": "C₆H₁₀", "group": "Alkena",
+        "desc": "Alkena siklik. Ikatan rangkap C=C reaktif terhadap reagen Baeyer dan bromin melalui reaksi adisi.",
+        "tests": {
+            "Tollens": "neg", "Baeyer": "pos", "Bromin": "pos",
+            "Iodoform": "neg", "DNPH": "neg", "FeCl₃": "neg",
+            "Lucas": "neg", "Biuret": "neg", "Molisch": "neg",
+        },
+        "positive": ["Baeyer", "Bromin"],
+        "negative": ["Tollens", "FeCl₃"],
+    },
+
+    # ── ALKUNA ────────────────────────────────────────────────────────────────
+    {
+        "name": "Asetilena (Etuna)", "formula": "HC≡CH", "group": "Alkuna",
+        "desc": "Alkuna terminal paling sederhana. Gas bahan bakar. Bereaksi dengan AgNO₃ menghasilkan endapan perak putih (alkuna terminal).",
+        "tests": {
+            "Tollens": "neg", "Baeyer": "pos", "Bromin": "pos",
+            "Iodoform": "neg", "DNPH": "neg", "FeCl₃": "neg",
+            "AgNO₃": "pos (endapan putih)",
+            "Biuret": "neg", "Molisch": "neg",
+        },
+        "positive": ["Baeyer", "Bromin", "AgNO₃ (endapan Ag-asetilida)"],
+        "negative": ["Tollens", "DNPH"],
+    },
+
+    # ── KARBOHIDRAT ───────────────────────────────────────────────────────────
+    {
+        "name": "Glukosa", "formula": "C₆H₁₂O₆", "group": "Karbohidrat",
+        "desc": "Monosakarida aldosa. Memiliki gugus aldehid bebas (-CHO) yang mereduksi pereaksi Tollens dan Fehling/Benedict.",
+        "tests": {
+            "Tollens": "pos", "Baeyer": "neg", "Bromin": "neg",
+            "Iodoform": "neg", "DNPH": "neg (lemah)", "FeCl₃": "neg",
+            "Biuret": "neg", "Molisch": "pos", "Fehling": "pos",
+            "Iodine": "neg",
+        },
+        "positive": ["Tollens (cermin perak)", "Fehling/Benedict (merah bata)", "Molisch (cincin ungu)"],
+        "negative": ["Iodine (tidak biru)", "DNPH"],
+    },
+    {
+        "name": "Fruktosa", "formula": "C₆H₁₂O₆", "group": "Karbohidrat",
+        "desc": "Monosakarida ketosa. Gula termanis. Meskipun ketosa, tetap mereduksi Fehling/Tollens melalui isomerisasi (enolisasi) dalam suasana basa.",
+        "tests": {
+            "Tollens": "pos (via isomerisasi)", "Baeyer": "neg", "Bromin": "neg",
+            "Iodoform": "neg", "DNPH": "neg", "FeCl₃": "neg",
+            "Biuret": "neg", "Molisch": "pos", "Fehling": "pos",
+            "Iodine": "neg",
+        },
+        "positive": ["Tollens (via isomerisasi basa)", "Fehling", "Molisch"],
+        "negative": ["Iodine", "DNPH"],
+    },
+    {
+        "name": "Amilum (Pati)", "formula": "(C₆H₁₀O₅)ₙ", "group": "Karbohidrat",
+        "desc": "Polisakarida non-pereduksi. Ciri khas: bereaksi dengan larutan iodin menghasilkan warna biru-hitam intens (amilosa membentuk kompleks helikal dengan I₂).",
+        "tests": {
+            "Tollens": "neg", "Baeyer": "neg", "Bromin": "neg",
+            "Iodoform": "neg", "DNPH": "neg", "FeCl₃": "neg",
+            "Biuret": "neg", "Molisch": "pos", "Fehling": "neg",
+            "Iodine": "pos (biru-hitam)",
+        },
+        "positive": ["Iodine (biru-hitam khas)", "Molisch", "Hidrolisis → Glukosa"],
+        "negative": ["Tollens (tidak mereduksi)", "Fehling"],
+    },
+
+    # ── PROTEIN ───────────────────────────────────────────────────────────────
+    {
+        "name": "Albumin", "formula": "Protein globular", "group": "Protein",
+        "desc": "Protein plasma darah. Mengandung ikatan peptida dan residu asam amino aromatik (Phe, Tyr, Trp). Xantoproteat positif.",
+        "tests": {
+            "Tollens": "neg", "Baeyer": "neg", "Bromin": "neg",
+            "Iodoform": "neg", "DNPH": "neg", "FeCl₃": "neg",
+            "Biuret": "pos (ungu)", "Molisch": "neg",
+            "Xantoproteat": "pos (kuning)", "Ninhydrin": "pos (ungu)",
+        },
+        "positive": ["Biuret (ungu)", "Xantoproteat (kuning)", "Ninhydrin (ungu)"],
+        "negative": ["Tollens", "DNPH", "Molisch"],
+    },
+    {
+        "name": "Kasein", "formula": "Fosfoprotein", "group": "Protein",
+        "desc": "Protein utama susu. Mengandung semua asam amino esensial. Mengendap pada pH isoelektrik (pH 4.6).",
+        "tests": {
+            "Tollens": "neg", "Baeyer": "neg", "Bromin": "neg",
+            "Iodoform": "neg", "DNPH": "neg", "FeCl₃": "neg",
+            "Biuret": "pos (ungu)", "Molisch": "neg",
+            "Xantoproteat": "pos", "Ninhydrin": "pos",
+        },
+        "positive": ["Biuret", "Xantoproteat", "Ninhydrin"],
+        "negative": ["Tollens", "Molisch"],
+    },
+
+    # ── AROMATIK ──────────────────────────────────────────────────────────────
+    {
+        "name": "Benzena", "formula": "C₆H₆", "group": "Aromatik",
+        "desc": "Senyawa aromatik paling sederhana. Sangat stabil karena resonansi. Tidak beradisi dengan Br₂ tanpa katalis. Bereaksi substitusi (SEAr) dengan katalis asam Lewis.",
+        "tests": {
+            "Tollens": "neg", "Baeyer": "neg", "Bromin": "neg (tanpa katalis)",
+            "Iodoform": "neg", "DNPH": "neg", "FeCl₃": "neg",
+            "Lucas": "neg", "Biuret": "neg", "Molisch": "neg",
+        },
+        "positive": ["Nitrasi (HNO₃/H₂SO₄)", "Sulfonasi", "Halogenasi (dengan FeBr₃)"],
+        "negative": ["Bromin (tanpa katalis)", "Baeyer", "Tollens"],
+    },
+
+    # ── ASAM AMINO ────────────────────────────────────────────────────────────
+    {
+        "name": "Glisin", "formula": "H₂NCH₂COOH", "group": "Asam Amino",
+        "desc": "Asam amino paling sederhana (tidak punya rantai samping). Bersifat amfoter. Ninhydrin ungu sangat khas.",
+        "tests": {
+            "Tollens": "neg", "Baeyer": "neg", "Bromin": "neg",
+            "Iodoform": "neg", "DNPH": "neg", "FeCl₃": "neg",
+            "Biuret": "neg", "Molisch": "neg",
+            "Ninhydrin": "pos (ungu)", "Lakmus": "amfoter",
+        },
+        "positive": ["Ninhydrin (ungu khas)", "Biuret (setelah kondensasi)"],
+        "negative": ["Tollens", "DNPH", "Molisch"],
+    },
+]
 # ── Sidebar navigation ──────────────────────────────────────────────────────
 with st.sidebar:
     st.markdown("## 🧪 OrganIQ")
